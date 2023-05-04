@@ -30,7 +30,7 @@
         <Label Content="Пароль" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
         <TextBox x:Name="UserPassword" Width="170" Height="25" Grid.Row="3" Grid.Column="1"></TextBox>
 
-        <Button x:Name="EntryButton" Content="Войти" Height="25" Width="100" Grid.Column="1" Grid.Row="4" VerticalAlignment="Top" Background="#FF76E383" Click="EntryButton_Click"></Button>
-        <Button Content="Список товаров" Height="25" Width="100"  Grid.Row="4" VerticalAlignment="Top" Background="#FF76E383" Click="Button_Click"></Button>
+        <Button x:Name="EntryButton" Content="Войти" Height="25" Width="100" Grid.Column="1" Grid.Row="4" VerticalAlignment="Top" Click="EntryButton_Click"></Button>
+        <Button Content="Список товаров" Height="25" Width="100"  Grid.Row="4" VerticalAlignment="Top" Click="Button_Click"></Button>
     </Grid>
 </Window>

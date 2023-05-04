@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SportShop.Windows.EditCreate;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -110,6 +111,19 @@ namespace SportShop
         {
             ListProducts.ItemsSource = db.Products.Where(x => x.ProductName.Contains(Search.Text)).ToList();
             CounterList.Content = $"{recordsShown} { ListProducts.Items.Count } из { db.Products.ToList().Count }";
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            var product = (sender as Button)?.DataContext as Product;
+            new EditCreateWindow(product, _user, true).Show();
+        }
+
+        private void AddProductButton_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new EditCreateWindow(new Product(), _user, false).Show();
         }
     }
 }

@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
 
         <Label x:Name="UserFio" Content="FIO" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="370" Height="30" HorizontalContentAlignment="Right" Grid.ColumnSpan="2"></Label>
-        <Button x:Name="ProductsButton" Content="Список товаров" Grid.Row="1" Height="30" Width="150" Background="#FF76E383" Click="ProductsButton_Click"></Button>
-        <Button x:Name="ExitButton" Content="Выйти" Height="30" Width="150" Grid.Column="1" Grid.Row="3" Background="#FF76E383"></Button>
+        <Button x:Name="ProductsButton" Content="Список товаров" Grid.Row="1" Height="30" Width="150"  Click="ProductsButton_Click"></Button>
+        <Button x:Name="ExitButton" Content="Выйти" Height="30" Width="150" Grid.Column="1" Grid.Row="3" ></Button>
     </Grid>
 </Window>

@@ -13,6 +13,7 @@ namespace SportShop
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Windows.Media;
+    using System.Windows.Media.Imaging;
 
     public partial class Product
     {
@@ -47,7 +48,9 @@ namespace SportShop
         public SolidColorBrush ColorProductDiscountAmount => ProductMaxDiscountAmount > 15 ? new SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString("#7fff00")) : new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
 
         [NotMapped]
-        public string ProductPhotoFromResources => "/Photos/" + ProductPhoto;
+        public BitmapImage ProductPhotoFromResources => !string.IsNullOrEmpty(ProductPhoto) 
+            ? new BitmapImage(new Uri("C:/Users/latyp/Desktop/4 курс 4432/Дем.Экз/Весна/SportShop/Photos/" + ProductPhoto)) 
+                : new BitmapImage(new Uri("C:/Users/latyp/Desktop/4 курс 4432/Дем.Экз/Весна/SportShop/Photos/picture.png"));
 
         [NotMapped]
         public double ProductCostWithAmount => double.Parse(ProductCost.ToString()) - (double.Parse(ProductCost.ToString()) * (double.Parse(ProductMaxDiscountAmount.ToString()) / 100.0));
