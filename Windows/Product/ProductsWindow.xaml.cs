@@ -1,4 +1,6 @@
 ﻿using SportShop.Windows.EditCreate;
+using SportShop.Windows.Order;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -8,20 +10,23 @@ namespace SportShop
 {
     public partial class ProductsWindow : Window
     {
-        private SportShopEntities db;
+        private SportShopEntities _db;
 
         private User _user;
 
         private const string recordsShown = "Показано записей";
         private const string unauthorizedUser = "Неавторизированный пользователь";
 
+        private Order _order;
+
         public ProductsWindow(User user = null)
         {
             InitializeComponent();
-            db = new SportShopEntities();
+            _db = new SportShopEntities();
             _user = user;
+            InitializeOrder();
 
-            ListProducts.ItemsSource = db.Products.ToList();
+            ListProducts.ItemsSource = _db.Products.ToList();
 
             ComboBoxFilterProductDiscountAmount.ItemsSource = new string[]
             {
@@ -59,27 +64,27 @@ namespace SportShop
             {
                 case 0:
                     {
-                        itemsSource = db.Products.Where(p => p.ProductMaxDiscountAmount < 10);
+                        itemsSource = _db.Products.Where(p => p.ProductMaxDiscountAmount < 10);
                         break;
                     }
                 case 1:
                     {
-                        itemsSource = db.Products.Where(p => p.ProductMaxDiscountAmount > 10 && p.ProductMaxDiscountAmount < 15);
+                        itemsSource = _db.Products.Where(p => p.ProductMaxDiscountAmount > 10 && p.ProductMaxDiscountAmount < 15);
                         break;
                     }
                 case 2:
                     {
-                        itemsSource = db.Products.Where(p => p.ProductMaxDiscountAmount > 15);
+                        itemsSource = _db.Products.Where(p => p.ProductMaxDiscountAmount > 15);
                         break;
                     }
                 case 3:
                     {
-                        itemsSource = db.Products;
+                        itemsSource = _db.Products;
                         break;
                     }
             }
             ListProducts.ItemsSource = itemsSource.ToList();
-            CounterList.Content = $"{recordsShown} {ListProducts.Items.Count} из {db.Products.ToList().Count}";
+            CounterList.Content = $"{recordsShown} {ListProducts.Items.Count} из {_db.Products.ToList().Count}";
         }
 
         private void OrderByFilter_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -89,28 +94,28 @@ namespace SportShop
             {
                 case 0:
                     {
-                        itemsSource = db.Products;
+                        itemsSource = _db.Products;
                         break;
                     }
                 case 1:
                     {
-                        itemsSource = db.Products.OrderBy(x => x.ProductCost);
+                        itemsSource = _db.Products.OrderBy(x => x.ProductCost);
                         break;
                     }
                 case 2:
                     {
-                        itemsSource = db.Products.OrderByDescending(x => x.ProductCost);
+                        itemsSource = _db.Products.OrderByDescending(x => x.ProductCost);
                         break;
                     }
             }
             ListProducts.ItemsSource = itemsSource.ToList();
-            CounterList.Content = $"{recordsShown} {ListProducts.Items.Count} из {db.Products.ToList().Count}";
+            CounterList.Content = $"{recordsShown} {ListProducts.Items.Count} из {_db.Products.ToList().Count}";
         }
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ListProducts.ItemsSource = db.Products.Where(x => x.ProductName.Contains(Search.Text)).ToList();
-            CounterList.Content = $"{recordsShown} { ListProducts.Items.Count } из { db.Products.ToList().Count }";
+            ListProducts.ItemsSource = _db.Products.Where(x => x.ProductName.Contains(Search.Text)).ToList();
+            CounterList.Content = $"{recordsShown} { ListProducts.Items.Count } из { _db.Products.ToList().Count }";
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
@@ -124,6 +129,54 @@ namespace SportShop
         {
             Hide();
             new EditCreateWindow(new Product(), _user, false).Show();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var product = (sender as MenuItem)?.DataContext as Product;
+            _db.OrderProducts.Add(new OrderProduct()
+            {
+                ProductID = product.ProductID,
+                Product = product,
+                OrderID = _order.OrderID,
+                Order = _order,
+                Count = 1
+            });
+            _db.SaveChanges();
+            ShowOrderButton.Visibility= Visibility.Visible;
+        }
+
+        private void InitializeOrder()
+        {
+            _order = new Order() 
+            { 
+                User = _user,
+                OrderGetCode = new Random().Next(100, 999)
+            };
+            if (_user != null)
+            {
+                _order.UserID = _user.UserID;
+            }
+
+            _order.OrderCreateDate = DateTime.Now;
+            _order.OrderDeliveryDate = DateTime.Now.AddDays(1);
+
+            _order.OrderStatusID = _db.OrderStatus
+                .Where(item => item.OrderStatusName == "Новый")
+                .FirstOrDefault().OrderStatusID;
+
+            _order.PickupPointID = _db.PickupPoints
+                .FirstOrDefault().PickupPointID;
+
+            Order order = _db.Orders.Add(_order);
+            _db.SaveChanges();
+            _order = order;
+        }
+
+        private void ShowOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new OrderWindow(_order.OrderID).ShowDialog();
         }
     }
 }
