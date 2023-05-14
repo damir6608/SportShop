@@ -25,7 +25,9 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Label x:Name="UserFio" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Content="UserFio"></Label>
+        <Button Name="SavePDF" Content="Скачать PDF" Click="SavePDF_Click"></Button>
+
+            <Label x:Name="UserFio" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Content="UserFio"></Label>
         <ListView Grid.Row="3" Grid.ColumnSpan="2" x:Name="ListProducts" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
